@@ -1,0 +1,34 @@
+[%
+   page.title='View Host'
+   page.section='Section'
+   page.subsection='Subsection'
+   use_table=1
+-%]
+[% page.toolbar = BLOCK -%]
+<div>
+ <a class="btn btn-default" href=[%c.uri_for_action('host/edit', [object.id]) %]>Edit</a>
+  &nbsp;<a lass="btn btn-danger" href=[% c.uri_for_action('host/delete', [object.id]) %]>Delete</a>
+    </div>
+[% END %]
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <dl class="dl-horizontal">
+        <dt>name</dt>
+        <dd>[% object.name | html %]</dd>
+        <dt>ipaddr</dt>
+        <dd>[% object.ipaddr | html %]</dd>
+        <dt>macaddr</dt>
+        <dd>[% object.macaddr | html %]</dd>
+        <dt>notes</dt>
+        <dd>[% object.notes | html %]</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+
+
+
+
