@@ -1,0 +1,32 @@
+[%
+   page.title='View Contact'
+   page.section='Section'
+   page.subsection='Subsection'
+   use_table=1
+-%]
+[% page.toolbar = BLOCK -%]
+<div>
+ <a class="btn btn-default" href=[%c.uri_for_action('contact/edit', [object.id]) %]>Edit</a>
+  &nbsp;<a lass="btn btn-danger" href=[% c.uri_for_action('contact/delete', [object.id]) %]>Delete</a>
+    </div>
+[% END %]
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <dl class="dl-horizontal">
+        <dt>name</dt>
+        <dd>[% object.name | html %]</dd>
+        <dt>phone</dt>
+        <dd>[% object.phone | html %]</dd>
+        <dt>phone</dt>
+        <dd>[% object.address | html %]</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+
+
+
+

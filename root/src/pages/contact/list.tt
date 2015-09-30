@@ -1,0 +1,28 @@
+[%
+   page.title='List Contact'
+   page.section='Section'
+   page.subsection='Subsection'
+-%]
+<div id="host_create">
+<a href="[% c.uri_for_action('contact/create') %]" class="btn btn-sm btn-default">[% bootstrap_icon("plus") %] Add</a>
+</div>
+ <table class="table" id="contact_list">
+   <thead>
+     <tr>
+        <th>name</th>
+        <th>email</th>
+        <th>phone</th>
+        <th></th>
+     </tr>
+   </thead>
+   <tbody>
+[% FOREACH object IN object_list %]
+         <tr>
+ 	 <td>[% object.name | html %]</td>
+ 	 <td>[% object.email | html %]</td>
+ 	 <td>[% object.phone | html %]</td>
+ 	 <td><a href=[% c.uri_for_action('contact/view', [object.id]) %]>View</a></td>
+         </tr>
+[% END %]
+   </tbody>
+</table>

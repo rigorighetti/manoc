@@ -26,7 +26,7 @@ __PACKAGE__->add_columns(
     },
     'ipaddr' => {
         data_type   => 'varchar',
-        is_nullable => 1,
+        is_nullable => 0,
         size        => 15,
 	    ipv4_address => 1,
     },
@@ -34,7 +34,12 @@ __PACKAGE__->add_columns(
         data_type   => 'varchar',
         is_nullable => 1,
         size        => 17
-    },    
+    }, 
+    'owner' => {
+        data_type     => 'int',
+        default_value => 'NULL',
+        is_nullable   => 1,
+    },   
     'notes' => {
         data_type   => 'text',
         is_nullable => 1,
@@ -42,7 +47,9 @@ __PACKAGE__->add_columns(
 );
 
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->add_unique_constraint( [ 'name' ] );
+__PACKAGE__->add_unique_constraint( [ 'name', 'ipaddr' ] );
+
+__PACKAGE__->belongs_to( owner    => 'Manoc::DB::Result::Contact' );
 
 
 1;
