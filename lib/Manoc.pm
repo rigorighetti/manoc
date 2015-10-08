@@ -24,16 +24,15 @@ use Catalyst qw/
     Authentication
     Authorization::Roles
     Authorization::ACL
-    Scheduler
     Session
     Session::Store::DBI
     Session::State::Cookie
+    +Manoc::CatalystPlugin::RequestToken
     StackTrace
     /;
 
 extends 'Catalyst';
 
-with 'Manoc::Search';
 with 'Manoc::Logger::CatalystRole';
 with 'Catalyst::ClassData';
 
@@ -113,14 +112,6 @@ __PACKAGE__->config(
         dbi_expires_field => 'expires',
     }
 );
-
-# use Plack middleware for CSRF protection
-__PACKAGE__->config(
-    psgi_middleware => [
-        Session => { store => 'File' },
-        'CSRFBlock'
-    ])
-    unless ( $ENV{MANOC_NO_CSRFBLOCK} );
 
 
 ########################################################################
@@ -210,10 +201,6 @@ after setup_finalize => sub {
 # Start the application
 __PACKAGE__->setup();
 
-__PACKAGE__->schedule(
-    at    => '@daily',
-    event => '/cron/remove_sessions'
-);
 
 =head1 NAME
 

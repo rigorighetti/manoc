@@ -7,7 +7,7 @@ package Manoc::IPAddress::IPv4;
 use Moose;
 use namespace::autoclean;
 
-use Manoc::Utils::IPAddress qw(ip2int int2ip padded_ipaddr);
+use Manoc::Utils::IPAddress qw(ip2int int2ip padded_ipaddr check_addr);
 
 
 use overload (
@@ -73,7 +73,9 @@ sub _cmp_op {
     if (blessed($second) && $second->isa("Manoc::IPAddress::IPv4")) {
 	return $first->numeric <=> $second->numeric;
     }
-    return  ( $first->padded cmp padded_ipaddr($second) );
+    check_addr("$second") and
+        return  ( $first->padded cmp padded_ipaddr("$second") );
+    return -1;
 }
 
 __PACKAGE__->meta->make_immutable;

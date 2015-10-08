@@ -5,6 +5,7 @@
 package Manoc::DB::ResultSet::IPNetwork;
 
 use base 'DBIx::Class::ResultSet';
+use Scalar::Util qw(blessed);
 use strict;
 use warnings;
 
@@ -28,6 +29,29 @@ sub rebuild_tree {
 
 }
 
+sub including_address {
+    my ( $self, $ipaddress) = @_;
+
+    if ( blessed($ipaddress)
+             &&  $ipaddress->isa('Manoc::IPAddress::IPv4') )
+    {
+        $ipaddress = $ipaddress->padded;
+    }
+    
+    return $self->search(
+        {
+            'address'    => { '<=' => $ipaddress },
+            'broadcast'  => { '>=' => $ipaddress },
+        }
+    );
+}
+
+sub including_address_ordered {
+    shift->including_address(@_)->search(
+        {},
+        { order_by => { -desc => 'address' }}
+    );
+}
 
 1;
 # Local Variables:

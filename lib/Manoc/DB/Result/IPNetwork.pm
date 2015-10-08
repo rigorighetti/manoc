@@ -119,14 +119,14 @@ sub broadcast {
     if (@_ > 1) {
         die "The broadcast attribute is automatically set from address and prefix";
     }
-    return $self->_broadcast;
+    return $self->_broadcast if defined($self->_broadcast);
+    return $self->_broadcast($self->network->broadcast);
 }
 
 # call this method after resizing a network
 sub _rebuild_subtree {
     my $self = shift;
 
-    warn "build subtree";
     if ($self->children) {
         my $outside = $self->children->search(
             [
@@ -158,23 +158,25 @@ sub insert {
         my $supernets = $self->result_source->resultset->search(
             {
                 address  =>  { '<=' => $self->address->padded   },
-                broadcast => { '<=' => $self->broadcast->padded },
+                broadcast => { '>=' => $self->broadcast->padded },
             },
             {
                 order_by => [
-                    { -asc => 'me.address' },
-                    { -desc => 'me.broadcast' }
+                    { -desc => 'me.address' },
+                    { -asc => 'me.broadcast' }
                 ]
             });
         $parent = $supernets->first();
-        
+
         #bypass dbic::tree
-        $self->_parent( $parent );
+        $parent and $self->_parent( $parent );
     }
+
+    $self->next::method( @_ );
 
     my $new_children;
     if ($parent) {
-        $new_children = $parent->children->search(
+        $new_children = $self->siblings->search(
             {
                 address   => { '>=' => $self->address->padded   },
                 broadcast => { '<=' => $self->broadcast->padded }
@@ -182,7 +184,8 @@ sub insert {
     } else {
         $new_children = $self->result_source->resultset->search(
             {
-                parent    => undef,
+                parent_id => { '='  => undef                    },
+                id        => { '!=' => $self->id                },
                 address   => { '>=' => $self->address->padded   },
                 broadcast => { '<=' => $self->broadcast->padded }
             });
@@ -190,8 +193,6 @@ sub insert {
     while ( my $child = $new_children->next()) {
         $child->parent($self);
     }
-    
-    $self->next::method( @_ );
 }
 
 sub is_larger_than_parent {
@@ -238,7 +239,7 @@ __PACKAGE__->parent_column('parent_id');
 
 __PACKAGE__->belongs_to( vlan => 'Manoc::DB::Result::Vlan',
                          'vlan_id',
-                         { join_type => 'left' });
+                         { join_type => 'LEFT' });
 
 __PACKAGE__->add_relationship(
     'supernets' => 'IPNetwork',
@@ -364,8 +365,10 @@ sub children_ordered {
 sub sqlt_deploy_hook {
    my ($self, $sqlt_table) = @_;
 
-   $sqlt_table->add_index(name => 'idx_address_broadcast', fields => ['address', 'broadcast']);
-   $sqlt_table->add_index(name => 'idx_address_prefix', fields => ['address', 'prefix']);
+   $sqlt_table->add_index(name => 'idx_ipnet_address_broadcast',
+                          fields => ['address', 'broadcast']);
+   $sqlt_table->add_index(name => 'idx_ipnet_address_prefix',
+                          fields => ['address', 'prefix']);
 }
 
 

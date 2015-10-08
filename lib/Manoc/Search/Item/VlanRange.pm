@@ -9,6 +9,12 @@ extends 'Manoc::Search::Item';
 
 has '+item_type' => ( default => 'vlanrange' );
 
+has 'id' => (
+    is       => 'ro',
+    isa      => 'Int',
+    required => 1,
+);
+
 has 'name' => (
     is       => 'ro',
     isa      => 'Str',

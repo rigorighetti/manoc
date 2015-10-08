@@ -2,33 +2,29 @@
 #
 # This library is free software. You can redistribute it and/or modify
 # it under the same terms as Perl itself.
-package Manoc::Form::Base::SaveButton;
+package Manoc::Form::TraitFor::CSRF;
 use HTML::FormHandler::Moose::Role;
 
 =head1 NAME
 
-Manoc::Form::Base::Horizontal - Role for adding a BS3 'Save' button
+Manoc::Form::TraitFor::CSRF - Role for Manoc forms CSRF
 
 =head1 DESCRIPTION
 
-Include this role to add a Bootstrap 3 submit button labeled 'Save'
-
-=head1 FIELDS
-
-=head2 save
-
-The save button itself. Order is set to 1000 to make sure it is always at the bottom of the form.
+Include this role to include a CSRF hidden form.
 
 =cut
 
-has_field 'save' => (
-    type => 'Submit',
-    widget => 'ButtonTag',
-    element_attr => { class => ['btn', 'btn-primary'] },
-    widget_wrapper => 'None',
-    value => "Save",
-    order => 1000,
+has_field 'csrf_token' => (
+    type  => 'Hidden',
+    html_name => 'csrf_token',
 );
+
+sub default_csrf_token {
+    my $self = shift;
+
+    return $self->ctx->get_token;
+}
 
 =head1 AUTHOR
 

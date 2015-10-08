@@ -7,7 +7,14 @@ use utf8;
 use HTML::FormHandler::Moose;
 
 extends 'HTML::FormHandler::Model::DBIC';
-with 'Manoc::Form::Base::Theme';
+
+with 'Manoc::Form::TraitFor::Theme';
+with 'Manoc::Form::TraitFor::CSRF';
+
+#required for CSRF
+has '+ctx' => (
+    required => 1,
+);
 
 # with 'HTML::FormHandlerX::Form::JQueryValidator';
 
