@@ -6,16 +6,15 @@ package Manoc::Form::Host;
 use HTML::FormHandler::Moose;
 extends 'Manoc::Form::Base';
 
-with 'Manoc::Form::Base::SaveButton';
+with 'Manoc::Form::TraitFor::SaveButton';
 
 use namespace::autoclean;
+
 use HTML::FormHandler::Types ('IPAddress');
 
 has '+item_class' => ( default => 'Host' );
 has '+name' => ( default => 'form-host' );
 has '+html_prefix' => ( default => 1 );
-
-sub build_render_list {[   'name','macaddr','ipaddr', 'notes','save' ]}
 
 has_field 'name' => (
     type => 'Text',
@@ -38,17 +37,45 @@ has_field 'macaddr' => (
 has_field 'ipaddr' => (
     apply => [ IPAddress ],
     size => 15,
-    required => 0,
+    required => 1,
     label    => 'Address',
     element_attr => { placeholder => 'e.g. 192.168.1.1' },
 );
 
+has_field 'contact_name' => (
+    type => 'Text',
+    required => 0,
+    label => 'Assigned to',
+    element_attr => { placeholder => 'Contact name' }
+);
+
+has_field 'contact_id' => (
+    type         => 'Select',
+    empty_select => '---Select owner---',
+    required     => 1,
+    label        => 'Owner',
+);
 
 has_field 'notes' => ( 
     type => 'TextArea', 
     label => 'Notes', 
 );
 
+sub options_contact_id {
+    my $self = shift;
+    return unless $self->schema;
+    my @contacts = $self->schema->resultset('Contact')->search( {}, { order_by => 'name' } )->all();
+    return map { label => $_->name, value => $_->id }, @contacts;
+}
 
+ # around 'update_model' => sub {
+ #    my $orig = shift;
+ #    my $self = shift;
+ #    my $item = $self->item;
+ #    $self->schema->txn_do( sub {
+ #        $self->$orig(@_);  
+
+ #    });
+ # };
 __PACKAGE__->meta->make_immutable;
 no HTML::FormHandler::Moose;

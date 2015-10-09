@@ -6,15 +6,13 @@ package Manoc::Form::Contact;
 use HTML::FormHandler::Moose;
 extends 'Manoc::Form::Base';
 
-with 'Manoc::Form::Base::SaveButton';
+with 'Manoc::Form::TraitFor::SaveButton';
 
 use namespace::autoclean;
 
 has '+item_class' => ( default => 'Contact' );
 has '+name' => ( default => 'form-contact' );
 has '+html_prefix' => ( default => 1 );
-
-sub build_render_list {[   'name','email','telephone', 'notes' ]}
 
 has_field 'name' => (
     type => 'Text',

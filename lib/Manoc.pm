@@ -173,7 +173,7 @@ after setup_finalize => sub {
 
     #default admin ACL for full CRUD resources
     my @CRUD        = qw/create edit delete/;
-    my @controllers = qw/device building rack ipnetwork vlan vlanrange mngurlformat user/;
+    my @controllers = qw/device building rack ipnetwork vlan vlanrange mngurlformat user host contact/;
 
     foreach my $ctrl (@controllers) {
         foreach (@CRUD) {
