@@ -34,6 +34,16 @@ __PACKAGE__->add_columns(
         is_nullable   => 1,
         size          => 17
     }, 
+    'hostname' => {
+        data_type     => 'varchar',
+        is_nullable   => 1,
+        size          => 128,
+    },
+    'domain' => {
+        data_type     => 'varchar',
+        is_nullable   => 1,
+        size          => 128,
+    },   
     'contact_id' => {
         data_type     => 'int',
         default_value => 'NULL',
@@ -53,17 +63,24 @@ __PACKAGE__->add_columns(
 );
 
 sub contact_name {
-  my $self = shift;
+    my $self = shift;
+  
+      if (@_) {
+         $self->_contact_name(@_);
+      }
+  
+    return $self->contact_id ? $self->contact_entry->name : $self->_contact_name;
+}
 
-  if (@_) {
-     $self->_contact_name(@_);
-  }
-
-  return $self->contact_id ? $self->contact_entry->name : $self->_contact_name;
+sub fqdn {
+    my $self = shift;
+    return $self->hostname.".".$self->domain if($self->hostname and $self->domain);
+    return $self->hostname if($self->hostname);
 }
 
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->add_unique_constraint( [ 'name', 'ipaddr' ] );
+__PACKAGE__->add_unique_constraint( ['name'] );
+__PACKAGE__->add_unique_constraint( ['ipaddr']);
 
 __PACKAGE__->belongs_to( contact_entry => 'Manoc::DB::Result::Contact',
                                           {'foreign.id' => 'self.contact_id'},

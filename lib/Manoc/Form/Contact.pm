@@ -25,10 +25,11 @@ has_field 'email' => (
     label => 'Email',
     required => 0,
     type  => 'Email',
+    element_attr => { placeholder => 'e.g. name@domain.com' }
 );
 
 
-has_field telephone => ( 
+has_field 'telephone' => ( 
     type         => 'Text',
     required     => 0,
     apply    => [
@@ -36,6 +37,7 @@ has_field telephone => (
      check => sub { $_[0] =~ /\d+/ },
      message => 'Invalid Telephone Number'
     }],
+    element_attr => { placeholder => 'Telephone number' }
 );
 
 has_field 'notes' => ( 

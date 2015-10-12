@@ -23,6 +23,14 @@ has_field 'name' => (
     element_attr => { placeholder => 'Hostname' }
 );
 
+has_field 'ipaddr' => (
+    apply => [ IPAddress ],
+    size => 15,
+    required => 1,
+    label    => 'Address',
+    element_attr => { placeholder => 'e.g. 192.168.1.1' },
+);
+
 has_field 'macaddr' => ( 
     type => 'Text', 
     size => 17, 
@@ -34,13 +42,20 @@ has_field 'macaddr' => (
     element_attr => { placeholder => 'e.g. aa:bb:cc:dd:ee:ff' }
 );
 
-has_field 'ipaddr' => (
-    apply => [ IPAddress ],
-    size => 15,
-    required => 1,
-    label    => 'Address',
-    element_attr => { placeholder => 'e.g. 192.168.1.1' },
+has_field 'hostname' => (
+    type => 'Text',
+    required => 0,
+    label => 'Hostname',
+    element_attr => { placeholder => 'Hostname' }
 );
+
+has_field 'domain' => (
+    type => 'Text',
+    required => 0,
+    label => 'Domain',
+    element_attr => { placeholder => 'Domain' }
+);
+
 
 has_field 'contact_name' => (
     type => 'Text',
@@ -52,7 +67,7 @@ has_field 'contact_name' => (
 has_field 'contact_id' => (
     type         => 'Select',
     empty_select => '---Select owner---',
-    required     => 1,
+    required     => 0,
     label        => 'Owner',
 );
 

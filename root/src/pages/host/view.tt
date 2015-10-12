@@ -21,6 +21,8 @@
         <dd>[% object.ipaddr | html %]</dd>
         <dt>macaddr</dt>
         <dd>[% object.macaddr | html %]</dd>
+        <dt>fqdn</dt>
+        <dd>[% object.fqdn | html %]</dd>
         <dt>assigned to</dt>
         <dd>[% object.contact_name | html %]</dd>    
         <dt>notes</dt>
